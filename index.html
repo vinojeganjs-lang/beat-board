@@ -90,6 +90,7 @@
       color: var(--accent);
       background: var(--accent-soft);
       font-size: 19px;
+      flex-shrink: 0;
     }
 
     .brand h1 {
@@ -147,7 +148,7 @@
       border-color: #e5c27c;
     }
 
-    /* ---------------- Main board ---------------- */
+    /* ---------------- Main ---------------- */
 
     .main {
       width: min(1600px, calc(100% - 32px));
@@ -156,15 +157,55 @@
     }
 
     .board-intro {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 20px;
       margin-bottom: 22px;
     }
 
-    .board-intro h2 {
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .screenplay-title {
       margin: 0 0 5px;
+      padding: 1px 4px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      cursor: text;
+      transition: 0.15s ease;
+    }
+
+    .screenplay-title:hover {
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .title-edit-icon {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .title-row:hover .title-edit-icon {
+      opacity: 1;
+    }
+
+    .title-input {
+      width: min(500px, 100%);
+      margin: 0 0 5px;
+      padding: 2px 5px;
+      border: 1px solid #756342;
+      border-radius: 5px;
+      outline: none;
+      color: var(--text);
+      background: #101216;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 28px;
       font-weight: 500;
@@ -175,6 +216,66 @@
       color: var(--muted);
       font-size: 13px;
     }
+
+    /* ---------------- Character filters ---------------- */
+
+    .character-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 15px;
+    }
+
+    .filter-label {
+      margin-right: 2px;
+      color: #777c85;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .filter-chip {
+      padding: 6px 9px;
+      border: 1px solid #353942;
+      border-radius: 20px;
+      color: #aeb2ba;
+      background: #181a1f;
+      font-size: 11px;
+      transition: 0.15s ease;
+    }
+
+    .filter-chip:hover {
+      color: var(--text);
+      border-color: #4a4e57;
+    }
+
+    .filter-chip.active {
+      color: #17140e;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .clear-filter {
+      display: none;
+      padding: 5px 8px;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      font-size: 11px;
+    }
+
+    .clear-filter.visible {
+      display: inline-block;
+    }
+
+    .clear-filter:hover {
+      color: var(--text);
+    }
+
+    /* ---------------- Board ---------------- */
 
     .board {
       display: grid;
@@ -263,6 +364,17 @@
       border-color: var(--accent);
     }
 
+    .scene-card.filtered-out {
+      display: none;
+    }
+
+    .scene-card.filter-match {
+      border-color: #6b5938;
+      box-shadow:
+        0 0 0 1px rgba(216, 179, 106, 0.1),
+        0 5px 18px rgba(0, 0, 0, 0.13);
+    }
+
     .card-top {
       display: flex;
       align-items: flex-start;
@@ -303,6 +415,46 @@
 
     .icon-btn.delete:hover {
       color: var(--danger);
+    }
+
+    /* Mobile move/reorder controls */
+
+    .move-controls {
+      display: none;
+      align-items: center;
+      gap: 2px;
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid #2d3037;
+    }
+
+    .move-btn {
+      flex: 1;
+      height: 27px;
+      border: 1px solid #30343b;
+      border-radius: 5px;
+      color: #8d929b;
+      background: #181a1e;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .move-btn:hover:not(:disabled) {
+      color: var(--text);
+      border-color: #4b4f58;
+      background: #24272d;
+    }
+
+    .move-btn:disabled {
+      opacity: 0.28;
+      cursor: default;
+    }
+
+    .move-separator {
+      width: 1px;
+      height: 18px;
+      margin: 0 3px;
+      background: #353840;
     }
 
     .scene-heading {
@@ -511,14 +663,16 @@
         padding-top: 20px;
       }
 
-      .board-intro {
-        align-items: flex-start;
-        flex-direction: column;
-        margin-bottom: 17px;
+      .screenplay-title {
+        font-size: 24px;
       }
 
-      .board-intro h2 {
+      .title-input {
         font-size: 24px;
+      }
+
+      .title-edit-icon {
+        opacity: 1;
       }
 
       .board {
@@ -535,6 +689,10 @@
 
       .empty-state {
         min-height: 65px;
+      }
+
+      .move-controls {
+        display: flex;
       }
 
       .modal-backdrop {
@@ -571,10 +729,32 @@
   </header>
 
   <main class="main">
+
     <div class="board-intro">
-      <div>
-        <h2>Untitled screenplay</h2>
-        <p id="sceneSummary">3 scenes · Everything is saved in this browser</p>
+      <div class="title-row" id="titleRow">
+        <h2
+          class="screenplay-title"
+          id="screenplayTitle"
+          title="Click to rename"
+        >Untitled screenplay</h2>
+        <span class="title-edit-icon">✎</span>
+      </div>
+
+      <input
+        class="title-input"
+        id="titleInput"
+        type="text"
+        maxlength="120"
+        aria-label="Screenplay title"
+        style="display:none;"
+      />
+
+      <p id="sceneSummary">
+        3 scenes · Everything is saved in this browser
+      </p>
+
+      <div class="character-filters" id="characterFilters">
+        <span class="filter-label">Characters</span>
       </div>
     </div>
 
@@ -618,6 +798,7 @@
   <!-- Add / Edit Modal -->
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
       <div class="modal-header">
         <h3 id="modalTitle">Add scene</h3>
         <p>Capture the scene in its simplest dramatic form.</p>
@@ -684,6 +865,9 @@
       "use strict";
 
       const STORAGE_KEY = "beat-board-scenes-v1";
+      const TITLE_STORAGE_KEY = "beat-board-title-v1";
+
+      const ACTS = ["Act 1", "Act 2A", "Act 2B", "Act 3"];
 
       const DEFAULT_SCENES = [
         {
@@ -710,8 +894,10 @@
       ];
 
       let scenes = loadScenes();
+      let screenplayTitle = loadTitle();
       let editingId = null;
       let draggedId = null;
+      let activeCharacterFilter = null;
 
       const board = document.getElementById("board");
       const modalBackdrop = document.getElementById("modalBackdrop");
@@ -725,10 +911,28 @@
       const sceneSummary = document.getElementById("sceneSummary");
       const toast = document.getElementById("toast");
 
-      const headingInput = document.getElementById("heading");
-      const beatInput = document.getElementById("beat");
-      const charactersInput = document.getElementById("characters");
-      const actInput = document.getElementById("act");
+      const screenplayTitleElement =
+        document.getElementById("screenplayTitle");
+
+      const titleInput =
+        document.getElementById("titleInput");
+
+      const characterFilters =
+        document.getElementById("characterFilters");
+
+      const headingInput =
+        document.getElementById("heading");
+
+      const beatInput =
+        document.getElementById("beat");
+
+      const charactersInput =
+        document.getElementById("characters");
+
+      const actInput =
+        document.getElementById("act");
+
+      /* ---------------- Storage ---------------- */
 
       function loadScenes() {
         try {
@@ -746,126 +950,355 @@
             throw new Error("Invalid saved data");
           }
 
-          return parsed;
+          /*
+           * Normalize older v1 data in case a card did not have
+           * a valid character array.
+           */
+          return parsed.map(scene => ({
+            id: scene.id || crypto.randomUUID(),
+            heading: scene.heading || "",
+            beat: scene.beat || "",
+            characters: Array.isArray(scene.characters)
+              ? scene.characters
+              : [],
+            act: ACTS.includes(scene.act)
+              ? scene.act
+              : "Act 1"
+          }));
+
         } catch (error) {
           console.warn("Could not load saved board:", error);
           return structuredClone(DEFAULT_SCENES);
         }
       }
 
-      function saveScenes(showStatus = true) {
+      function loadTitle() {
+        try {
+          const stored = localStorage.getItem(TITLE_STORAGE_KEY);
+
+          return stored && stored.trim()
+            ? stored.trim()
+            : "Untitled screenplay";
+        } catch {
+          return "Untitled screenplay";
+        }
+      }
+
+      function saveScenes() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(scenes));
-
-          if (showStatus) {
-            saveStatus.textContent = "Saved locally";
-          }
+          saveStatus.textContent = "Saved locally";
         } catch (error) {
-          console.error("Could not save board:", error);
+          console.error("Could not save scenes:", error);
           saveStatus.textContent = "Save failed";
         }
       }
 
-      function render() {
-        const columns = [...document.querySelectorAll(".act-column")];
+      function saveTitle() {
+        try {
+          localStorage.setItem(
+            TITLE_STORAGE_KEY,
+            screenplayTitle
+          );
 
-        columns.forEach(column => {
-          const act = column.dataset.act;
-          const cardsContainer = column.querySelector(".cards");
-          const count = column.querySelector(".act-count");
+          saveStatus.textContent = "Saved locally";
+        } catch (error) {
+          console.error("Could not save title:", error);
+          saveStatus.textContent = "Save failed";
+        }
+      }
+
+      /*
+       * This is the canonical ordering function.
+       *
+       * Scenes are ALWAYS represented as:
+       *
+       * Act 1
+       * Act 2A
+       * Act 2B
+       * Act 3
+       *
+       * while preserving their top-to-bottom order inside each act.
+       */
+      function getOrderedScenes() {
+        const ordered = [];
+
+        ACTS.forEach(act => {
+          scenes
+            .filter(scene => scene.act === act)
+            .forEach(scene => ordered.push(scene));
+        });
+
+        return ordered;
+      }
+
+      /*
+       * Normalize the underlying array after every structural change.
+       * This guarantees the same order is used by rendering, numbering
+       * and export.
+       */
+      function normalizeSceneOrder() {
+        scenes = getOrderedScenes();
+      }
+
+      /* ---------------- Render ---------------- */
+
+      function render() {
+        normalizeSceneOrder();
+
+        screenplayTitleElement.textContent = screenplayTitle;
+
+        const orderedScenes = getOrderedScenes();
+
+        ACTS.forEach(act => {
+          const column =
+            document.querySelector(
+              `.act-column[data-act="${CSS.escape(act)}"]`
+            );
+
+          if (!column) return;
+
+          const cardsContainer =
+            column.querySelector(".cards");
+
+          const count =
+            column.querySelector(".act-count");
 
           cardsContainer.innerHTML = "";
 
-          const actScenes = scenes.filter(scene => scene.act === act);
+          const actScenes =
+            orderedScenes.filter(scene => scene.act === act);
 
           count.textContent = actScenes.length;
 
           if (actScenes.length === 0) {
             const empty = document.createElement("div");
+
             empty.className = "empty-state";
             empty.textContent = "Drop a scene here";
+
             cardsContainer.appendChild(empty);
           } else {
-            actScenes.forEach((scene, index) => {
-              cardsContainer.appendChild(createCard(scene, index));
+            actScenes.forEach(scene => {
+              cardsContainer.appendChild(
+                createCard(scene)
+              );
             });
           }
         });
 
         sceneSummary.textContent =
-          `${scenes.length} scene${scenes.length === 1 ? "" : "s"} · Everything is saved in this browser`;
+          `${orderedScenes.length} scene${orderedScenes.length === 1 ? "" : "s"} · Everything is saved in this browser`;
 
+        renderCharacterFilters();
+        applyCharacterFilter();
         setupDragAndDrop();
       }
 
-      function createCard(scene, index) {
+      /* ---------------- Character filters ---------------- */
+
+      function getCharacters() {
+        const names = new Set();
+
+        scenes.forEach(scene => {
+          scene.characters.forEach(character => {
+            const name = character.trim();
+
+            if (name) {
+              names.add(name);
+            }
+          });
+        });
+
+        return [...names].sort((a, b) =>
+          a.localeCompare(b, undefined, {
+            sensitivity: "base"
+          })
+        );
+      }
+
+      function renderCharacterFilters() {
+        characterFilters.innerHTML = "";
+
+        const label = document.createElement("span");
+        label.className = "filter-label";
+        label.textContent = "Characters";
+
+        characterFilters.appendChild(label);
+
+        const characters = getCharacters();
+
+        characters.forEach(character => {
+          const chip = document.createElement("button");
+
+          chip.type = "button";
+          chip.className = "filter-chip";
+
+          if (
+            activeCharacterFilter &&
+            activeCharacterFilter.toLowerCase() === character.toLowerCase()
+          ) {
+            chip.classList.add("active");
+          }
+
+          chip.textContent = character;
+
+          chip.addEventListener("click", () => {
+            if (
+              activeCharacterFilter &&
+              activeCharacterFilter.toLowerCase() === character.toLowerCase()
+            ) {
+              activeCharacterFilter = null;
+            } else {
+              activeCharacterFilter = character;
+            }
+
+            renderCharacterFilters();
+            applyCharacterFilter();
+          });
+
+          characterFilters.appendChild(chip);
+        });
+
+        const clearButton = document.createElement("button");
+
+        clearButton.type = "button";
+        clearButton.className =
+          "clear-filter" +
+          (activeCharacterFilter ? " visible" : "");
+
+        clearButton.textContent = "Clear";
+
+        clearButton.addEventListener("click", () => {
+          activeCharacterFilter = null;
+          renderCharacterFilters();
+          applyCharacterFilter();
+        });
+
+        characterFilters.appendChild(clearButton);
+      }
+
+      function applyCharacterFilter() {
+        const cards =
+          document.querySelectorAll(".scene-card");
+
+        cards.forEach(card => {
+          const id = card.dataset.id;
+
+          const scene =
+            scenes.find(item => item.id === id);
+
+          if (!scene) return;
+
+          if (!activeCharacterFilter) {
+            card.classList.remove(
+              "filtered-out",
+              "filter-match"
+            );
+            return;
+          }
+
+          const matches =
+            scene.characters.some(character =>
+              character.toLowerCase() ===
+              activeCharacterFilter.toLowerCase()
+            );
+
+          card.classList.toggle(
+            "filtered-out",
+            !matches
+          );
+
+          card.classList.toggle(
+            "filter-match",
+            matches
+          );
+        });
+      }
+
+      /* ---------------- Scene cards ---------------- */
+
+      function createCard(scene) {
         const card = document.createElement("article");
+
         card.className = "scene-card";
         card.draggable = true;
         card.dataset.id = scene.id;
+
+        const sceneNumber =
+          getOrderedScenes().findIndex(
+            item => item.id === scene.id
+          ) + 1;
 
         const top = document.createElement("div");
         top.className = "card-top";
 
         const number = document.createElement("span");
         number.className = "scene-number";
-        number.textContent = `SCENE ${getGlobalSceneNumber(scene.id)}`;
+        number.textContent =
+          `SCENE ${sceneNumber}`;
 
         const menu = document.createElement("div");
         menu.className = "card-menu";
 
-        const editButton = document.createElement("button");
-        editButton.className = "icon-btn";
-        editButton.type = "button";
-        editButton.title = "Edit scene";
-        editButton.setAttribute("aria-label", "Edit scene");
-        editButton.textContent = "✎";
+        const editButton =
+          createIconButton(
+            "✎",
+            "Edit scene",
+            () => openEditModal(scene.id)
+          );
 
-        editButton.addEventListener("click", event => {
-          event.stopPropagation();
-          openEditModal(scene.id);
-        });
+        const deleteButton =
+          createIconButton(
+            "×",
+            "Delete scene",
+            () => deleteScene(scene.id)
+          );
 
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "icon-btn delete";
-        deleteButton.type = "button";
-        deleteButton.title = "Delete scene";
-        deleteButton.setAttribute("aria-label", "Delete scene");
-        deleteButton.textContent = "×";
-
-        deleteButton.addEventListener("click", event => {
-          event.stopPropagation();
-          deleteScene(scene.id);
-        });
+        deleteButton.classList.add("delete");
 
         menu.append(editButton, deleteButton);
         top.append(number, menu);
 
-        const heading = document.createElement("div");
+        const heading =
+          document.createElement("div");
+
         heading.className = "scene-heading";
         heading.textContent = scene.heading;
 
-        const beat = document.createElement("p");
+        const beat =
+          document.createElement("p");
+
         beat.className = "beat";
         beat.textContent = scene.beat;
 
-        const characters = document.createElement("div");
+        const characters =
+          document.createElement("div");
+
         characters.className = "characters";
 
-        const names = Array.isArray(scene.characters)
-          ? scene.characters
-          : [];
-
-        names.forEach(name => {
+        scene.characters.forEach(name => {
           if (!name.trim()) return;
 
-          const tag = document.createElement("span");
+          const tag =
+            document.createElement("span");
+
           tag.className = "character";
           tag.textContent = name.trim();
+
           characters.appendChild(tag);
         });
 
-        card.append(top, heading, beat, characters);
+        const moveControls =
+          createMoveControls(scene);
+
+        card.append(
+          top,
+          heading,
+          beat,
+          characters,
+          moveControls
+        );
 
         card.addEventListener("dblclick", () => {
           openEditModal(scene.id);
@@ -874,10 +1307,283 @@
         return card;
       }
 
-      function getGlobalSceneNumber(id) {
-        const index = scenes.findIndex(scene => scene.id === id);
-        return index >= 0 ? index + 1 : "";
+      function createIconButton(
+        symbol,
+        title,
+        handler
+      ) {
+        const button =
+          document.createElement("button");
+
+        button.className = "icon-btn";
+        button.type = "button";
+        button.title = title;
+        button.setAttribute(
+          "aria-label",
+          title
+        );
+        button.textContent = symbol;
+
+        button.addEventListener(
+          "click",
+          event => {
+            event.stopPropagation();
+            handler();
+          }
+        );
+
+        return button;
       }
+
+      /*
+       * Mobile controls:
+       *
+       * ← previous act
+       * ↑ move up
+       * ↓ move down
+       * → next act
+       */
+      function createMoveControls(scene) {
+        const controls =
+          document.createElement("div");
+
+        controls.className = "move-controls";
+
+        const actIndex =
+          ACTS.indexOf(scene.act);
+
+        const actScenes =
+          getOrderedScenes().filter(
+            item => item.act === scene.act
+          );
+
+        const localIndex =
+          actScenes.findIndex(
+            item => item.id === scene.id
+          );
+
+        const previousActButton =
+          createMoveButton(
+            "‹",
+            "Move to previous act",
+            actIndex === 0,
+            () => moveToAct(
+              scene.id,
+              ACTS[actIndex - 1]
+            )
+          );
+
+        const upButton =
+          createMoveButton(
+            "↑",
+            "Move scene up",
+            localIndex === 0,
+            () => moveWithinAct(
+              scene.id,
+              -1
+            )
+          );
+
+        const downButton =
+          createMoveButton(
+            "↓",
+            "Move scene down",
+            localIndex === actScenes.length - 1,
+            () => moveWithinAct(
+              scene.id,
+              1
+            )
+          );
+
+        const nextActButton =
+          createMoveButton(
+            "›",
+            "Move to next act",
+            actIndex === ACTS.length - 1,
+            () => moveToAct(
+              scene.id,
+              ACTS[actIndex + 1]
+            )
+          );
+
+        controls.append(
+          previousActButton,
+          upButton,
+          downButton,
+          nextActButton
+        );
+
+        return controls;
+      }
+
+      function createMoveButton(
+        symbol,
+        title,
+        disabled,
+        handler
+      ) {
+        const button =
+          document.createElement("button");
+
+        button.type = "button";
+        button.className = "move-btn";
+        button.textContent = symbol;
+        button.title = title;
+        button.setAttribute(
+          "aria-label",
+          title
+        );
+        button.disabled = disabled;
+
+        if (!disabled) {
+          button.addEventListener(
+            "click",
+            event => {
+              event.stopPropagation();
+              handler();
+            }
+          );
+        }
+
+        return button;
+      }
+
+      /* ---------------- Mobile movement ---------------- */
+
+      function moveWithinAct(id, direction) {
+        const scene =
+          scenes.find(item => item.id === id);
+
+        if (!scene) return;
+
+        const actScenes =
+          getOrderedScenes().filter(
+            item => item.act === scene.act
+          );
+
+        const currentIndex =
+          actScenes.findIndex(
+            item => item.id === id
+          );
+
+        const newIndex =
+          currentIndex + direction;
+
+        if (
+          currentIndex < 0 ||
+          newIndex < 0 ||
+          newIndex >= actScenes.length
+        ) {
+          return;
+        }
+
+        const target =
+          actScenes[newIndex];
+
+        const globalCurrent =
+          scenes.findIndex(
+            item => item.id === id
+          );
+
+        const globalTarget =
+          scenes.findIndex(
+            item => item.id === target.id
+          );
+
+        if (
+          globalCurrent === -1 ||
+          globalTarget === -1
+        ) {
+          return;
+        }
+
+        [
+          scenes[globalCurrent],
+          scenes[globalTarget]
+        ] = [
+          scenes[globalTarget],
+          scenes[globalCurrent]
+        ];
+
+        normalizeSceneOrder();
+        saveScenes();
+        render();
+
+        showToast(
+          direction < 0
+            ? "Scene moved up"
+            : "Scene moved down"
+        );
+      }
+
+      function moveToAct(id, targetAct) {
+        if (!targetAct) return;
+
+        const scene =
+          scenes.find(item => item.id === id);
+
+        if (!scene) return;
+
+        const oldAct =
+          scene.act;
+
+        const ordered =
+          getOrderedScenes();
+
+        const oldActScenes =
+          ordered.filter(
+            item => item.act === oldAct
+          );
+
+        const oldIndex =
+          oldActScenes.findIndex(
+            item => item.id === id
+          );
+
+        scene.act = targetAct;
+
+        /*
+         * Rebuild the board:
+         * remove the scene, then insert it at
+         * the end of the destination act.
+         */
+        const remaining =
+          ordered.filter(
+            item => item.id !== id
+          );
+
+        let insertionIndex = 0;
+
+        for (
+          let i = 0;
+          i < remaining.length;
+          i++
+        ) {
+          if (
+            remaining[i].act === targetAct
+          ) {
+            insertionIndex = i + 1;
+          }
+        }
+
+        remaining.splice(
+          insertionIndex,
+          0,
+          scene
+        );
+
+        scenes = remaining;
+
+        normalizeSceneOrder();
+        saveScenes();
+        render();
+
+        showToast(
+          `${scene.heading} moved to ${targetAct}`
+        );
+      }
+
+      /* ---------------- Modal ---------------- */
 
       function openAddModal() {
         editingId = null;
@@ -890,11 +1596,17 @@
 
         modalBackdrop.classList.add("open");
 
-        setTimeout(() => headingInput.focus(), 50);
+        setTimeout(
+          () => headingInput.focus(),
+          50
+        );
       }
 
       function openEditModal(id) {
-        const scene = scenes.find(item => item.id === id);
+        const scene =
+          scenes.find(
+            item => item.id === id
+          );
 
         if (!scene) return;
 
@@ -903,16 +1615,26 @@
         modalTitle.textContent = "Edit scene";
         saveBtn.textContent = "Save changes";
 
-        headingInput.value = scene.heading || "";
-        beatInput.value = scene.beat || "";
-        charactersInput.value = Array.isArray(scene.characters)
-          ? scene.characters.join(", ")
-          : "";
-        actInput.value = scene.act || "Act 1";
+        headingInput.value =
+          scene.heading || "";
+
+        beatInput.value =
+          scene.beat || "";
+
+        charactersInput.value =
+          Array.isArray(scene.characters)
+            ? scene.characters.join(", ")
+            : "";
+
+        actInput.value =
+          scene.act || "Act 1";
 
         modalBackdrop.classList.add("open");
 
-        setTimeout(() => headingInput.focus(), 50);
+        setTimeout(
+          () => headingInput.focus(),
+          50
+        );
       }
 
       function closeModal() {
@@ -922,116 +1644,298 @@
       }
 
       function deleteScene(id) {
-        const scene = scenes.find(item => item.id === id);
+        const scene =
+          scenes.find(
+            item => item.id === id
+          );
 
         if (!scene) return;
 
-        const confirmed = window.confirm(
-          `Delete this scene?\n\n${scene.heading}`
-        );
+        const confirmed =
+          window.confirm(
+            `Delete this scene?\n\n${scene.heading}`
+          );
 
         if (!confirmed) return;
 
-        scenes = scenes.filter(item => item.id !== id);
+        scenes =
+          scenes.filter(
+            item => item.id !== id
+          );
+
+        normalizeSceneOrder();
 
         saveScenes();
         render();
+
         showToast("Scene deleted");
       }
 
-      sceneForm.addEventListener("submit", event => {
-        event.preventDefault();
+      sceneForm.addEventListener(
+        "submit",
+        event => {
+          event.preventDefault();
 
-        const heading = headingInput.value.trim();
-        const beat = beatInput.value.trim();
-        const characters = charactersInput.value
-          .split(",")
-          .map(name => name.trim())
-          .filter(Boolean);
-        const act = actInput.value;
+          const heading =
+            headingInput.value.trim();
 
-        if (!heading || !beat) {
+          const beat =
+            beatInput.value.trim();
+
+          const characters =
+            charactersInput.value
+              .split(",")
+              .map(name => name.trim())
+              .filter(Boolean);
+
+          const act =
+            actInput.value;
+
+          if (!heading || !beat) {
+            return;
+          }
+
+          if (editingId) {
+            const scene =
+              scenes.find(
+                item => item.id === editingId
+              );
+
+            if (scene) {
+              scene.heading = heading;
+              scene.beat = beat;
+              scene.characters = characters;
+              scene.act = act;
+            }
+
+            showToast("Scene updated");
+          } else {
+            scenes.push({
+              id: crypto.randomUUID(),
+              heading,
+              beat,
+              characters,
+              act
+            });
+
+            showToast("Scene added");
+          }
+
+          normalizeSceneOrder();
+          saveScenes();
+          render();
+          closeModal();
+        }
+      );
+
+      addBtn.addEventListener(
+        "click",
+        openAddModal
+      );
+
+      cancelBtn.addEventListener(
+        "click",
+        closeModal
+      );
+
+      modalBackdrop.addEventListener(
+        "click",
+        event => {
+          if (
+            event.target === modalBackdrop
+          ) {
+            closeModal();
+          }
+        }
+      );
+
+      document.addEventListener(
+        "keydown",
+        event => {
+          if (
+            event.key === "Escape" &&
+            modalBackdrop.classList.contains(
+              "open"
+            )
+          ) {
+            closeModal();
+          }
+        }
+      );
+
+      /* ---------------- Title editing ---------------- */
+
+      screenplayTitleElement.addEventListener(
+        "click",
+        startTitleEdit
+      );
+
+      document
+        .querySelector(".title-edit-icon")
+        .addEventListener(
+          "click",
+          startTitleEdit
+        );
+
+      function startTitleEdit() {
+        titleInput.value =
+          screenplayTitle;
+
+        screenplayTitleElement.style.display =
+          "none";
+
+        document
+          .querySelector(".title-edit-icon")
+          .style.display = "none";
+
+        titleInput.style.display =
+          "block";
+
+        titleInput.focus();
+        titleInput.select();
+      }
+
+      function finishTitleEdit(save = true) {
+        if (
+          titleInput.style.display === "none"
+        ) {
           return;
         }
 
-        if (editingId) {
-          const scene = scenes.find(item => item.id === editingId);
+        if (save) {
+          const value =
+            titleInput.value.trim();
 
-          if (scene) {
-            scene.heading = heading;
-            scene.beat = beat;
-            scene.characters = characters;
-            scene.act = act;
+          screenplayTitle =
+            value || "Untitled screenplay";
+
+          saveTitle();
+        }
+
+        titleInput.style.display =
+          "none";
+
+        screenplayTitleElement.style.display =
+          "block";
+
+        document
+          .querySelector(".title-edit-icon")
+          .style.display = "";
+
+        screenplayTitleElement.textContent =
+          screenplayTitle;
+      }
+
+      titleInput.addEventListener(
+        "keydown",
+        event => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            finishTitleEdit(true);
           }
 
-          showToast("Scene updated");
-        } else {
-          scenes.push({
-            id: crypto.randomUUID(),
-            heading,
-            beat,
-            characters,
-            act
-          });
-
-          showToast("Scene added");
+          if (event.key === "Escape") {
+            event.preventDefault();
+            finishTitleEdit(false);
+          }
         }
+      );
 
-        saveScenes();
-        render();
-        closeModal();
-      });
-
-      addBtn.addEventListener("click", openAddModal);
-      cancelBtn.addEventListener("click", closeModal);
-
-      modalBackdrop.addEventListener("click", event => {
-        if (event.target === modalBackdrop) {
-          closeModal();
-        }
-      });
-
-      document.addEventListener("keydown", event => {
-        if (event.key === "Escape" && modalBackdrop.classList.contains("open")) {
-          closeModal();
-        }
-      });
+      titleInput.addEventListener(
+        "blur",
+        () => finishTitleEdit(true)
+      );
 
       /* ---------------- Drag and drop ---------------- */
 
       function setupDragAndDrop() {
-        const cards = document.querySelectorAll(".scene-card");
-        const columns = document.querySelectorAll(".act-column");
+        const cards =
+          document.querySelectorAll(
+            ".scene-card"
+          );
+
+        const columns =
+          document.querySelectorAll(
+            ".act-column"
+          );
 
         cards.forEach(card => {
-          card.addEventListener("dragstart", handleDragStart);
-          card.addEventListener("dragend", handleDragEnd);
-          card.addEventListener("dragover", handleCardDragOver);
-          card.addEventListener("drop", handleCardDrop);
+          card.addEventListener(
+            "dragstart",
+            handleDragStart
+          );
+
+          card.addEventListener(
+            "dragend",
+            handleDragEnd
+          );
+
+          card.addEventListener(
+            "dragover",
+            handleCardDragOver
+          );
+
+          card.addEventListener(
+            "dragleave",
+            handleCardDragLeave
+          );
+
+          card.addEventListener(
+            "drop",
+            handleCardDrop
+          );
         });
 
         columns.forEach(column => {
-          column.addEventListener("dragover", handleColumnDragOver);
-          column.addEventListener("dragleave", handleColumnDragLeave);
-          column.addEventListener("drop", handleColumnDrop);
+          column.addEventListener(
+            "dragover",
+            handleColumnDragOver
+          );
+
+          column.addEventListener(
+            "dragleave",
+            handleColumnDragLeave
+          );
+
+          column.addEventListener(
+            "drop",
+            handleColumnDrop
+          );
         });
       }
 
       function handleDragStart(event) {
-        draggedId = event.currentTarget.dataset.id;
+        draggedId =
+          event.currentTarget.dataset.id;
 
-        event.currentTarget.classList.add("dragging");
+        event.currentTarget.classList.add(
+          "dragging"
+        );
 
-        event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.setData("text/plain", draggedId);
+        event.dataTransfer.effectAllowed =
+          "move";
+
+        event.dataTransfer.setData(
+          "text/plain",
+          draggedId
+        );
       }
 
       function handleDragEnd(event) {
-        event.currentTarget.classList.remove("dragging");
+        event.currentTarget.classList.remove(
+          "dragging"
+        );
 
-        document.querySelectorAll(".drag-over, .drop-target").forEach(el => {
-          el.classList.remove("drag-over", "drop-target");
-        });
+        document
+          .querySelectorAll(
+            ".drag-over, .drop-target"
+          )
+          .forEach(element => {
+            element.classList.remove(
+              "drag-over",
+              "drop-target"
+            );
+          });
 
         draggedId = null;
       }
@@ -1039,16 +1943,22 @@
       function handleColumnDragOver(event) {
         event.preventDefault();
 
-        const column = event.currentTarget;
-
         if (!draggedId) return;
 
-        column.classList.add("drag-over");
+        event.currentTarget.classList.add(
+          "drag-over"
+        );
       }
 
       function handleColumnDragLeave(event) {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          event.currentTarget.classList.remove("drag-over");
+        if (
+          !event.currentTarget.contains(
+            event.relatedTarget
+          )
+        ) {
+          event.currentTarget.classList.remove(
+            "drag-over"
+          );
         }
       }
 
@@ -1056,158 +1966,315 @@
         event.preventDefault();
         event.stopPropagation();
 
-        const card = event.currentTarget;
+        const card =
+          event.currentTarget;
 
-        if (card.dataset.id !== draggedId) {
-          card.classList.add("drop-target");
+        if (
+          card.dataset.id !== draggedId
+        ) {
+          card.classList.add(
+            "drop-target"
+          );
         }
+      }
+
+      function handleCardDragLeave(event) {
+        event.currentTarget.classList.remove(
+          "drop-target"
+        );
       }
 
       function handleCardDrop(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        const targetCard = event.currentTarget;
-        const targetId = targetCard.dataset.id;
+        const targetCard =
+          event.currentTarget;
 
-        if (!draggedId || draggedId === targetId) return;
+        const targetId =
+          targetCard.dataset.id;
 
-        moveSceneBefore(draggedId, targetId);
+        if (
+          !draggedId ||
+          draggedId === targetId
+        ) {
+          return;
+        }
 
-        targetCard.classList.remove("drop-target");
+        moveSceneBefore(
+          draggedId,
+          targetId
+        );
+
+        targetCard.classList.remove(
+          "drop-target"
+        );
 
         saveScenes();
         render();
+
         showToast("Scenes reordered");
       }
 
       function handleColumnDrop(event) {
         event.preventDefault();
 
-        const column = event.currentTarget;
-        const targetAct = column.dataset.act;
+        const column =
+          event.currentTarget;
 
-        column.classList.remove("drag-over");
+        const targetAct =
+          column.dataset.act;
+
+        column.classList.remove(
+          "drag-over"
+        );
 
         if (!draggedId) return;
 
-        const scene = scenes.find(item => item.id === draggedId);
+        /*
+         * If the drop happened on a card,
+         * handleCardDrop owns the operation.
+         */
+        if (
+          event.target.closest(
+            ".scene-card"
+          )
+        ) {
+          return;
+        }
+
+        const scene =
+          scenes.find(
+            item => item.id === draggedId
+          );
 
         if (!scene) return;
 
-        const targetContainer = column.querySelector(".cards");
-        const cards = [...targetContainer.querySelectorAll(".scene-card")];
+        const ordered =
+          getOrderedScenes();
+
+        const remaining =
+          ordered.filter(
+            item => item.id !== draggedId
+          );
+
+        scene.act = targetAct;
 
         /*
-         * If dropped directly on the empty area of a column,
-         * append the scene to the end of that act.
+         * Append to the end of the target act.
          */
-        if (!event.target.closest(".scene-card")) {
-          scenes = scenes.filter(item => item.id !== draggedId);
+        let insertionIndex = 0;
 
-          scene.act = targetAct;
-          scenes.push(scene);
+        remaining.forEach(
+          (item, index) => {
+            if (
+              item.act === targetAct
+            ) {
+              insertionIndex = index + 1;
+            }
+          }
+        );
 
-          reorderByAct();
+        remaining.splice(
+          insertionIndex,
+          0,
+          scene
+        );
 
-          saveScenes();
-          render();
-          showToast("Scene moved");
+        scenes = remaining;
+
+        normalizeSceneOrder();
+        saveScenes();
+        render();
+
+        showToast("Scene moved");
+      }
+
+      function moveSceneBefore(
+        draggedId,
+        targetId
+      ) {
+        const ordered =
+          getOrderedScenes();
+
+        const draggedIndex =
+          ordered.findIndex(
+            item => item.id === draggedId
+          );
+
+        const targetIndex =
+          ordered.findIndex(
+            item => item.id === targetId
+          );
+
+        if (
+          draggedIndex === -1 ||
+          targetIndex === -1
+        ) {
+          return;
         }
-      }
 
-      function moveSceneBefore(draggedId, targetId) {
-        const dragged = scenes.find(item => item.id === draggedId);
-        const target = scenes.find(item => item.id === targetId);
+        const dragged =
+          ordered[draggedIndex];
 
-        if (!dragged || !target) return;
+        const target =
+          ordered[targetIndex];
 
-        scenes = scenes.filter(item => item.id !== draggedId);
+        /*
+         * Moving across acts changes the dragged
+         * scene's act to the target card's act.
+         */
+        dragged.act =
+          target.act;
 
-        dragged.act = target.act;
+        ordered.splice(
+          draggedIndex,
+          1
+        );
 
-        const targetIndex = scenes.findIndex(item => item.id === targetId);
+        const newTargetIndex =
+          ordered.findIndex(
+            item => item.id === targetId
+          );
 
-        scenes.splice(targetIndex, 0, dragged);
-      }
-
-      function reorderByAct() {
-        const acts = ["Act 1", "Act 2A", "Act 2B", "Act 3"];
-        const ordered = [];
-
-        acts.forEach(act => {
-          scenes
-            .filter(scene => scene.act === act)
-            .forEach(scene => ordered.push(scene));
-        });
+        ordered.splice(
+          newTargetIndex,
+          0,
+          dragged
+        );
 
         scenes = ordered;
+
+        normalizeSceneOrder();
       }
 
       /* ---------------- Export ---------------- */
 
-      exportBtn.addEventListener("click", () => {
-        if (scenes.length === 0) {
-          showToast("Nothing to export yet");
-          return;
-        }
+      exportBtn.addEventListener(
+        "click",
+        () => {
+          const ordered =
+            getOrderedScenes();
 
-        const acts = ["Act 1", "Act 2A", "Act 2B", "Act 3"];
-        const lines = [];
+          if (ordered.length === 0) {
+            showToast(
+              "Nothing to export yet"
+            );
+            return;
+          }
 
-        lines.push("SCREENPLAY OUTLINE");
-        lines.push("==================");
-        lines.push("");
+          const lines = [];
 
-        let number = 1;
+          lines.push(
+            screenplayTitle.toUpperCase()
+          );
 
-        acts.forEach(act => {
-          const actScenes = scenes.filter(scene => scene.act === act);
+          lines.push(
+            "=".repeat(
+              screenplayTitle.length
+            )
+          );
 
-          if (actScenes.length === 0) return;
+          lines.push("");
 
-          lines.push(act.toUpperCase());
-          lines.push("-".repeat(act.length + 1));
+          let number = 1;
 
-          actScenes.forEach(scene => {
-            const characterText = scene.characters.length
-              ? ` [${scene.characters.join(", ")}]`
-              : "";
+          ACTS.forEach(act => {
+            const actScenes =
+              ordered.filter(
+                scene => scene.act === act
+              );
+
+            if (actScenes.length === 0) {
+              return;
+            }
 
             lines.push(
-              `${number}. ${scene.heading}`
+              act.toUpperCase()
             );
 
             lines.push(
-              `   ${scene.beat}${characterText}`
+              "-".repeat(
+                act.length
+              )
             );
 
             lines.push("");
 
-            number++;
+            actScenes.forEach(scene => {
+              const characterText =
+                scene.characters.length
+                  ? ` [${scene.characters.join(", ")}]`
+                  : "";
+
+              lines.push(
+                `${number}. ${scene.heading}`
+              );
+
+              lines.push(
+                `   ${scene.beat}${characterText}`
+              );
+
+              lines.push("");
+
+              number++;
+            });
           });
-        });
 
-        const text = lines.join("\n");
+          const text =
+            lines.join("\n");
 
-        const blob = new Blob([text], {
-          type: "text/plain;charset=utf-8"
-        });
+          const blob =
+            new Blob(
+              [text],
+              {
+                type:
+                  "text/plain;charset=utf-8"
+              }
+            );
 
-        const url = URL.createObjectURL(blob);
+          const url =
+            URL.createObjectURL(blob);
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "screenplay-outline.txt";
+          const link =
+            document.createElement("a");
 
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+          link.href = url;
 
-        URL.revokeObjectURL(url);
+          link.download =
+            makeExportFilename(
+              screenplayTitle
+            );
 
-        showToast("Outline exported");
-      });
+          document.body.appendChild(
+            link
+          );
+
+          link.click();
+          link.remove();
+
+          URL.revokeObjectURL(url);
+
+          showToast(
+            "Outline exported"
+          );
+        }
+      );
+
+      function makeExportFilename(title) {
+        let filename =
+          title
+            .trim()
+            .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (!filename) {
+          filename = "screenplay-outline";
+        }
+
+        return `${filename}.txt`;
+      }
 
       /* ---------------- Toast ---------------- */
 
@@ -1219,9 +2286,15 @@
 
         clearTimeout(toastTimer);
 
-        toastTimer = setTimeout(() => {
-          toast.classList.remove("show");
-        }, 1800);
+        toastTimer =
+          setTimeout(
+            () => {
+              toast.classList.remove(
+                "show"
+              );
+            },
+            1800
+          );
       }
 
       /* ---------------- Initial render ---------------- */
